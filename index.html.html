@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #c7f0ee;
+            color: #212529;
+            overflow-x: hidden;
+        }
+
+        /* Dynamic Background Strip */
+        #bg-strip {
+            position: fixed;
+            top: -20%;
+            left: 10%;
+            width: 350px;
+            height: 150vh;
+            background-color: #ffffff;
+            transform: rotate(-20deg);
+            z-index: -1;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        /* Topbar Styling */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .profile-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pfp-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #2c3e50;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .pfp-circle svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .identity {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .identity h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1.2;
+        }
+
+        .identity .subtitle {
+            font-size: 0.85rem;
+            color: #5c6770;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* Two-Column Layout Grid */
+        .page-layout {
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 310px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Shared Bubble/Card Styling */
+        .bubble {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(6px);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .main-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .main-column .bubble {
+            min-height: 240px;
+        }
+
+        .main-column h2 {
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+            color: #2c3e50;
+        }
+
+        .main-column p {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background-color: #e4f7f6;
+            color: #2c3e50;
+            border: 1px solid #b5e6e3;
+            padding: 0.32rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+
+        .tag-pill:hover {
+            transform: translateY(-2px);
+            background-color: #d2f2f0;
+        }
+
+        .tag-pill svg {
+            width: 14px;
+            height: 14px;
+            color: #2c3e50;
+            flex-shrink: 0;
+        }
+
+        /* Right Sidebar Column */
+        .side-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 5.5rem;
+        }
+
+        .side-bubble h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #c7f0ee;
+            color: #2c3e50;
+        }
+
+        /* Contacts List Styling */
+        .contact-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .contact-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: #e4f7f6;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .contact-label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-link {
+            color: #1a202c;
+            text-decoration: none;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.2s ease;
+        }
+
+        .contact-link:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+
+        /* Education Item Styling */
+        .edu-item {
+            margin-bottom: 1.25rem;
+        }
+
+        .edu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .edu-item h3 {
+            font-size: 1rem;
+            color: #1a202c;
+            margin-bottom: 2px;
+        }
+
+        .edu-school {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .edu-year {
+            display: inline-block;
+            font-size: 0.78rem;
+            color: #2c3e50;
+            background: #e4f7f6;
+            padding: 2px 8px;
+            border-radius: 999px;
+            margin-top: 4px;
+        }
+
+        .edu-details {
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        /* Responsive fallback for smaller screens */
+        @media (max-width: 768px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+            }
+            .side-column {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Dynamic Background Strip -->
+    <div id="bg-strip"></div>
+
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="profile-group">
+            <div class="pfp-circle" title="Profile Avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                    <path d="M2 2l7.586 7.586"></path>
+                    <circle cx="11" cy="11" r="2"></circle>
+                </svg>
+            </div>
+
+            <div class="identity">
+                <h1>Ian Steven R. Sevilla</h1>
+                <span class="subtitle">BS Computer Science Student</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Two-Column Content -->
+    <div class="page-layout">
+        
+        <!-- Left Column: Main Bubbles -->
+        <main class="main-column">
+            <section class="bubble">
+                <h2>About Me</h2>
+
+                <!-- Tag Bubbles directly below "About Me" -->
+                <div class="tag-group">
+                    <span class="tag-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                        BS Computer Science
+                    </span>
+
+                    <span class="tag-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21h18"></path>
+                            <path d="M5 21V7l8-4v18"></path>
+                            <path d="M19 21V11l-6-4"></path>
+                        </svg>
+                        Ateneo de Davao University
+                    </span>
+
+                    <span class="tag-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        Davao City, Philippines
+                    </span>
+
+                    <span class="tag-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M2 12h20"></path>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                        English | Filipino
+                    </span>
+                </div>
+
+                <p>I am an aspiring undergraduate student pursuing a Bachelor of Science in Computer Science at Ateneo de Davao University.</p>
+                <br>
+                <p>Deeply fascinated and passionate of learning more about electronics and computer among other things, I plan to apply this knowledge in my journey towards software development and code programming.</p>
+            </section>
+
+            <section class="bubble">
+                <h2>Skills</h2>
+                <p>These are the tools/programs/apps that I am currently learning and using!.</p>
+
+                <br>
+
+                <div class="tag-group">
+                <span class="tag-pill">C program</span>
+                <span class="tag-pill">C++ program</span>
+                <span class="tag-pill">HTML</span>
+                <span class="tag-pill">Python</span>
+                <span class="tag-pill">Javascript</span>
+                
+                <br><br>
+
+            </section>
+
+            <section class="bubble">
+                <h2>Hobbies</h2>
+                <p>This is the stuff I like to do during my free time!</p>
+
+                <br>
+
+                <div class="tag-group">
+                <span class="tag-pill">Drawing</span>
+                <span class="tag-pill">Gaming</span>
+                <span class="tag-pill">Writing</span>
+                <span class="tag-pill">Designing</span>
+                <span class="tag-pill">Traveling</span>
+                <span class="tag-pill">Singing</span>
+
+                <br><br>
+
+            </section>
+        </main>
+
+        <!-- Right Column: Stacked Side Bubbles (Contacts on Top, Education Below) -->
+        <div class="side-column">
+
+            <!-- Contacts Side Bubble -->
+            <aside class="bubble side-bubble">
+                <h2>Contacts</h2>
+
+                <ul class="contact-list">
+                    <!-- Email -->
+                    <li class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <span class="contact-label">Email</span>
+                            <a href="mailto:Isrsevilla@addu.edu.ph" class="contact-link">Isrsevilla@addu.edu.ph</a>
+                        </div>
+                    </li>
+
+                    <!-- GitHub -->
+                    <li class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                                <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <span class="contact-label">GitHub</span>
+                            <a href="https://github.com/Isrsevilla" target="_blank" class="contact-link">github.com/Isrsevilla</a>
+                        </div>
+                    </li>
+
+                    <!-- Location -->
+                    <li class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <span class="contact-label">Location</span>
+                            <span class="contact-link">Davao City, Philippines</span>
+                        </div>
+                    </li>
+                </ul>
+            </aside>
+            
+            <!-- Education Side Bubble -->
+            <aside class="bubble side-bubble">
+                <h2>Education</h2>
+
+                <div class="edu-item">
+                    <h3>Bachelor of Science in Computer Science</h3>
+                    <div class="edu-school">Ateneo de Davao University</div>
+                    <span class="edu-year">Present</span>
+                    <p class="edu-details">Relevant coursework: Programming, Differential Calculus, Discrete Mathematics.</p>
+                </div>
+
+                <div class="edu-item">
+                    <h3>Senior High School / High School</h3>
+                    <div class="edu-school">Ateneo de Davao University</div>
+                    <span class="edu-year">Graduated</span>
+                    <p class="edu-details">Graduated with honors / STEM strand focus.</p>
+                </div>
+            </aside>
+
+        </div>
+
+    </div>
+
+    <script>
+        const strip = document.getElementById('bg-strip');
+
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+            const moveX = scrollPosition * 0.4;
+            strip.style.transform = `translateX(${moveX}px) rotate(-20deg)`;
+        });
+    </script>
+
+</body>
+</html>
